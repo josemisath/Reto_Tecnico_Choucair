@@ -1,5 +1,6 @@
 package com.co.proyecto.tasks;
 
+import com.github.javafaker.Faker;
 import net.serenitybdd.core.steps.Instrumented;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
@@ -10,21 +11,15 @@ import net.serenitybdd.screenplay.actions.SelectFromOptions;
 import net.serenitybdd.screenplay.waits.WaitUntil;
 import org.openqa.selenium.Keys;
 
+import java.util.Random;
+
 import static com.co.proyecto.userinterfaces.FormularioPrincipal.*;
 import static net.serenitybdd.screenplay.matchers.WebElementStateMatchers.isVisible;
 
 public class Rellenar implements Task {
 
-    String mes;
-    String dia;
-    String anio;
-
-    public Rellenar(String mes, String dia, String anio) {
-        this.mes = mes;
-        this.dia = dia;
-        this.anio = anio;
-    }
-
+    Faker faker = new Faker();
+    Random random = new Random();
 
 
     @Override
@@ -32,12 +27,12 @@ public class Rellenar implements Task {
         actor.attemptsTo(
                 WaitUntil.the(BTN_REGISTRAR,isVisible()).forNoMoreThan(10).seconds(),
                 Click.on(BTN_REGISTRAR),
-                Enter.theValue("Jose").into(TXT_NOMBRE),
-                Enter.theValue("Oliveros").into(TXT_APELLIDO),
-                Enter.theValue("of.hesselink@gmail.com").into(TXT_CORREO),
-                SelectFromOptions.byVisibleText(mes).from(SELECT_MES),
-                SelectFromOptions.byVisibleText(dia).from(SELECT_DIA),
-                SelectFromOptions.byVisibleText(anio).from(SELECT_ANIO),
+                Enter.theValue(faker.name().firstName()).into(TXT_NOMBRE),
+                Enter.theValue(faker.name().lastName()).into(TXT_APELLIDO),
+                Enter.theValue(faker.internet().emailAddress()).into(TXT_CORREO),
+                SelectFromOptions.byIndex(random.nextInt(12)).from(SELECT_MES),
+                SelectFromOptions.byIndex(random.nextInt(28)).from(SELECT_DIA),
+                SelectFromOptions.byIndex(random.nextInt(40)).from(SELECT_ANIO),
                 JavaScriptClick.on(BTN_LENGUAJE),
                 Enter.keyValues(Keys.ENTER).into(BTN_LENGUAJE),
                 JavaScriptClick.on(BTN_SIGUIENTE)
@@ -46,8 +41,8 @@ public class Rellenar implements Task {
         );
     }
 
-    public static Rellenar elFormulario(String mes, String dia, String anio){
-        return Instrumented.instanceOf(Rellenar.class).withProperties(mes, dia, anio);
+    public static Rellenar elFormulario(){
+        return Instrumented.instanceOf(Rellenar.class).withProperties();
     }
 
 }

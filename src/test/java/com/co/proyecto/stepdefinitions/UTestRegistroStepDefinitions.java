@@ -1,5 +1,6 @@
 package com.co.proyecto.stepdefinitions;
 
+import com.co.proyecto.models.DataTest;
 import com.co.proyecto.questions.ValidarTexto;
 import com.co.proyecto.tasks.Rellenar;
 import com.co.proyecto.tasks.RellenarContrasenia;
@@ -14,6 +15,8 @@ import net.serenitybdd.screenplay.actions.Open;
 import net.serenitybdd.screenplay.actors.OnStage;
 import net.serenitybdd.screenplay.actors.OnlineCast;
 
+import java.util.List;
+
 import static com.co.proyecto.userinterfaces.PaginaFinal.TXT_VALIDACION;
 import static org.hamcrest.CoreMatchers.containsString;
 
@@ -23,19 +26,19 @@ public class UTestRegistroStepDefinitions {
         OnStage.setTheStage(new OnlineCast());
     }
 
-    @Given("^El usuario ingresa a https://utest\\.com$")
-    public void elUsuarioIngresaAHttpsUtestCom() {
-        OnStage.theActorCalled("Brandon").wasAbleTo(Open.url("https://utest.com/"));
+    @Given("^El usuario ingresa a (.*)$")
+    public void elUsuarioIngresaAHttpsUtestCom(String url) {
+        OnStage.theActorCalled("Brandon").wasAbleTo(Open.url(url));
     }
 
 
     @When("^Rellena el formulario$")
-    public void rellenaElFormulario() {
+    public void rellenaElFormulario(List<DataTest> paisList) {
         OnStage.theActorInTheSpotlight().attemptsTo(
-                Rellenar.elFormulario("January", "1", "1990" ),
-                RellenarSegundo.formulario(),
-                RellenarTercero.formulariotercero(),
-                RellenarContrasenia.contrasenia()
+                Rellenar.elFormulario(),
+                RellenarSegundo.formulario(paisList),
+                RellenarTercero.formulariotercero(paisList),
+                RellenarContrasenia.contrasenia(paisList)
         );
     }
 
